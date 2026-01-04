@@ -1,0 +1,169 @@
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background-color: #fff8f2;
+  color: #222;
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 80px;
+  background: #fff;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.logo span {
+  color: #ff7a5a;
+}
+
+.nav-links a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.login-btn {
+  padding: 8px 18px;
+  border: 1px solid #ff7a5a;
+  background: transparent;
+  color: #ff7a5a;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ================= HERO ================= */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 80px;
+}
+
+.hero-text {
+  max-width: 550px;
+}
+
+.hero-text h1 {
+  font-size: 44px;
+  line-height: 1.3;
+}
+
+.hero-text h1 span {
+  color: #ff7a5a;
+}
+
+.hero-text p {
+  margin: 20px 0;
+  color: #555;
+}
+
+.hero-buttons button {
+  margin-right: 15px;
+}
+
+.primary-btn {
+  background: #4caf50;
+  color: white;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 6px;
+}
+
+.secondary-btn {
+  background: transparent;
+  border: 1px solid #222;
+  padding: 12px 22px;
+  border-radius: 6px;
+}
+
+/* ================= POPULAR ================= */
+.popular-section {
+  padding: 60px 80px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.popular-books-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 30px;
+}
+
+.book-card {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.book-card img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.book-card h3 {
+  margin: 10px 0 4px;
+}
+
+.book-card h4 {
+  font-size: 14px;
+  color: #666;
+}
+
+.book-card p {
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+.purchase-btn {
+  background: #4caf50;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ================= SALE ================= */
+.sale-banner {
+  background: #ff7a5a;
+  color: white;
+  text-align: center;
+  padding: 40px;
+  margin-top: 60px;
+}
+
+/* ================= FOOTER ================= */
+.footer {
+  background: #000;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
