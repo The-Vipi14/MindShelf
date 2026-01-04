@@ -1,21 +1,27 @@
 import Order from "../models/Order.model.js";
+import Cart from "../models/Cart.model.js";
+import { clearCart } from "./cart.controller.js";
 
 /**
- * @desc    Create new order (USER)
- * @route   POST /api/orders
+ * CREATE ORDER DIRECTLY (without cart)
  */
 export const createOrder = async (req, res) => {
   try {
-    const { items, totalAmount } = req.body;
+    const { items } = req.body;
 
     if (!items || items.length === 0) {
-      return res.status(400).json({ message: "No order items" });
+      return res.status(400).json({ message: "No items provided" });
     }
+
+    const totalAmount = items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
 
     const order = await Order.create({
       user: req.user._id,
       items,
-      totalAmount,
+      totalAmount
     });
 
     res.status(201).json(order);
@@ -25,56 +31,70 @@ export const createOrder = async (req, res) => {
 };
 
 /**
- * @desc    Get logged-in user's orders
- * @route   GET /api/orders/my
+ * CREATE ORDER FROM CART
  */
-export const getMyOrders = async (req, res) => {
+export const createOrderFromCart = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user._id })
-      .populate("items.book", "title price image")
-      .sort({ createdAt: -1 });
+    const cart = await Cart.findOne({ user: req.user._id })
+      .populate("items.book", "price");
 
-    res.json(orders);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch orders" });
-  }
-};
-
-/**
- * @desc    Get all orders (ADMIN)
- * @route   GET /api/orders
- */
-export const getAllOrders = async (req, res) => {
-  try {
-    const orders = await Order.find()
-      .populate("user", "name email")
-      .populate("items.book", "title price")
-      .sort({ createdAt: -1 });
-
-    res.json(orders);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch all orders" });
-  }
-};
-
-/**
- * @desc    Update order status (ADMIN)
- * @route   PUT /api/orders/:id/status
- */
-export const updateOrderStatus = async (req, res) => {
-  try {
-    const { status } = req.body;
-
-    const order = await Order.findById(req.params.id);
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
+    if (!cart || cart.items.length === 0) {
+      return res.status(400).json({ message: "Cart is empty" });
     }
 
-    order.status = status;
-    await order.save();
+    const items = cart.items.map(item => ({
+      book: item.book._id,
+      quantity: item.quantity,
+      price: item.book.price
+    }));
 
-    res.json(order);
+    const totalAmount = items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+
+    const order = await Order.create({
+      user: req.user._id,
+      items,
+      totalAmount
+    });
+
+    await clearCart(req.user._id);
+
+    res.status(201).json(order);
   } catch (error) {
-    res.status(500).json({ message: "Failed to update order status" });
+    res.status(500).json({ message: "Failed to place order" });
   }
+};
+
+/**
+ * USER ORDERS
+ */
+export const getMyOrders = async (req, res) => {
+  const orders = await Order.find({ user: req.user._id })
+    .populate("items.book", "title price");
+  res.json(orders);
+};
+
+/**
+ * ADMIN ORDERS
+ */
+export const getAllOrders = async (req, res) => {
+  const orders = await Order.find()
+    .populate("user", "name email")
+    .populate("items.book", "title price");
+  res.json(orders);
+};
+
+/**
+ * UPDATE ORDER STATUS
+ */
+export const updateOrderStatus = async (req, res) => {
+  const order = await Order.findById(req.params.id);
+  if (!order) return res.status(404).json({ message: "Order not found" });
+
+  order.status = req.body.status;
+  await order.save();
+
+  res.json(order);
 };

@@ -1,21 +1,42 @@
 import express from "express";
 import {
   createOrder,
+  createOrderFromCart,
   getMyOrders,
   getAllOrders,
-  updateOrderStatus,
+  updateOrderStatus
 } from "../controllers/order.controller.js";
 
 import { protect, adminOnly } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// USER
+/**
+ * ======================
+ * USER ROUTES
+ * ======================
+ */
+
+// Create order directly (without cart – optional future use)
 router.post("/", protect, createOrder);
+
+// Create order from cart
+router.post("/from-cart", protect, createOrderFromCart);
+
+// Get logged-in user's orders
 router.get("/my", protect, getMyOrders);
 
-// ADMIN
+
+/**
+ * ======================
+ * ADMIN ROUTES
+ * ======================
+ */
+
+// Get all orders
 router.get("/", protect, adminOnly, getAllOrders);
+
+// Update order status
 router.put("/:id/status", protect, adminOnly, updateOrderStatus);
 
 export default router;
